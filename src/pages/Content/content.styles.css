@@ -1,0 +1,9 @@
+body[data-rcp-is-hover-effect-on='true'] *:hover {
+  background-color: rgba(0, 0, 255, 0.1);
+  outline: 1px solid rgba(0, 0, 255, 0.5);
+}
+
+body[data-rcp-is-hover-effect-on='true'] *:has(*:hover) {
+  background-color: initial;
+  outline: initial;
+}
