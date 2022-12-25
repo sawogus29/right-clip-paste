@@ -1,33 +1,18 @@
+import {
+  writeToClipboard,
+  readFromClipboard,
+  isTextInputElement,
+  applyHandler,
+} from './utils';
+
 /**
  * utils
  */
-const writeToClipboard = (text) => {
-  navigator.clipboard.writeText(text);
-};
-
-const readFromClipboard = () => {
-  return navigator.clipboard.readText();
-};
-
-const isTextInputElement = (element) => {
-  const TEXT_INPUT_TYPES = ['text', 'search', 'input', 'email', 'password'];
-  return (
-    element.tagName === 'TEXTAREA' ||
-    (element.tagName === 'INPUT' && TEXT_INPUT_TYPES.includes(element.type))
-  );
-};
-
-const applyHandler = (function () {
-  let handler;
-
-  return (newHandler) => {
-    document.body.removeEventListener(handler);
-    handler = newHandler;
-    document.body.addEventListener(handler);
-  };
-})();
-
 const makeHandler = (isPasteToTextInputOn, isRightClipOn) => {
+  if (!isPasteToTextInputOn && !isRightClipOn) {
+    return null;
+  }
+
   return (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -92,7 +77,7 @@ chrome.storage.onChanged.addEventListener((changes, namespaces) => {
     isPasteToTextInputOn: setIsPasteToTextInputOn,
   };
 
-  for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
-    state = KEY_2_SETTER[key](newValue);
+  for (let [key, { _, newValue }] of Object.entries(changes)) {
+    state = KEY_2_SETTER[key](newValue, state);
   }
 });
