@@ -7,3 +7,8 @@ body[data-rcp-is-hover-effect-on='true'] *:has(*:hover) {
   background-color: initial;
   outline: initial;
 }
+
+#rcp-root,
+#rcp-root * {
+  pointer-events: none;
+}

@@ -1,3 +1,7 @@
+import React from 'react';
+import { render } from 'react-dom';
+import Snackbar from '@mui/material/Snackbar';
+
 import {
   writeToClipboard,
   readFromClipboard,
@@ -8,6 +12,25 @@ import {
 /**
  * utils
  */
+const rootElement = document.createElement('div');
+rootElement.id = 'rcp-root';
+document.body.appendChild(rootElement);
+
+const renderSnackbar = (text, open = true, duration = 1000, maxLength = 50) => {
+  const ellipsedText =
+    text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
+  render(
+    <Snackbar
+      className="rcp-snackbar"
+      open={open}
+      autoHideDuration={duration}
+      message={ellipsedText + '  ' + '📋'}
+      onClose={() => renderSnackbar(text, false)}
+    />,
+    rootElement
+  );
+};
+
 const makeHandler = (isPasteToTextInputOn, isRightClipOn) => {
   if (!isPasteToTextInputOn && !isRightClipOn) {
     return null;
@@ -28,6 +51,7 @@ const makeHandler = (isPasteToTextInputOn, isRightClipOn) => {
     if (isRightClipOn) {
       console.log(e.target.innerText);
       writeToClipboard(e.target.innerText);
+      renderSnackbar(e.target.innerText);
       return;
     }
   };
