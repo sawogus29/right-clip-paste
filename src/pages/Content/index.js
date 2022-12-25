@@ -41,6 +41,9 @@ const INITIAL_STATE = {
 };
 
 let state = { ...INITIAL_STATE };
+chrome.storage.local.get(state).then((result) => {
+  state = result;
+});
 
 /**
  * setter
