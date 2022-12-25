@@ -19,7 +19,9 @@ const makeHandler = (isPasteToTextInputOn, isRightClipOn) => {
     e.stopImmediatePropagation();
 
     if (isPasteToTextInputOn && isTextInputElement(e.target)) {
-      e.target.value = readFromClipboard();
+      readFromClipboard().then((text) => {
+        e.target.value = text;
+      });
       return;
     }
 
@@ -31,19 +33,13 @@ const makeHandler = (isPasteToTextInputOn, isRightClipOn) => {
   };
 };
 
-/**
- * Initialization
- */
-const INITIAL_STATE = {
-  isRightClipOn: false,
-  isHoverEffectOn: false,
-  isPasteToTextInputOn: false,
+const applyRightClickHandler = (isPasteToTextInputOn, isRightClipOn) => {
+  applyHandler(
+    'contextmenu',
+    makeHandler(isPasteToTextInputOn, isRightClipOn),
+    { capture: true }
+  );
 };
-
-let state = { ...INITIAL_STATE };
-chrome.storage.local.get(state).then((result) => {
-  state = result;
-});
 
 /**
  * setter
@@ -51,13 +47,13 @@ chrome.storage.local.get(state).then((result) => {
 const setIsRightClipOn = (isRightClipOn, state) => {
   const { isPasteToTextInputOn } = state;
 
-  applyHandler(makeHandler(isPasteToTextInputOn, isRightClipOn));
+  applyRightClickHandler(isPasteToTextInputOn, isRightClipOn);
 
   return { ...state, isRightClipOn };
 };
 
 const setIsHoverEffectOn = (isHoverEffectOn, state) => {
-  document.body.dataset['rcp-is-hover-effect-on'] = isHoverEffectOn;
+  document.body.dataset.rcpIsHoverEffectOn = isHoverEffectOn;
 
   return { ...state, isHoverEffectOn };
 };
@@ -65,21 +61,42 @@ const setIsHoverEffectOn = (isHoverEffectOn, state) => {
 const setIsPasteToTextInputOn = (isPasteToTextInputOn, state) => {
   const { isRightClipOn } = state;
 
-  applyHandler(makeHandler(isPasteToTextInputOn, isRightClipOn));
+  applyRightClickHandler(isPasteToTextInputOn, isRightClipOn);
 
   return { ...state, isPasteToTextInputOn };
 };
+
+const KEY_2_SETTER = {
+  isRightClipOn: setIsRightClipOn,
+  isHoverEffectOn: setIsHoverEffectOn,
+  isPasteToTextInputOn: setIsPasteToTextInputOn,
+};
+
+const setNewState = (newState) => {
+  for (let [key, newValue] of Object.entries(newState)) {
+    state = KEY_2_SETTER[key](newValue, state);
+  }
+};
+
+/**
+ * Initialization
+ */
+const INITIAL_STATE = {
+  isRightClipOn: true,
+  isHoverEffectOn: true,
+  isPasteToTextInputOn: true,
+};
+
+let state = { ...INITIAL_STATE };
+
+chrome.storage.local.get(state).then((newState) => {
+  setNewState(newState);
+});
 
 /**
  * Event Loop
  */
 chrome.storage.onChanged.addListener((changes, namespaces) => {
-  const KEY_2_SETTER = {
-    isRightClipOn: setIsRightClipOn,
-    isHoverEffectOn: setIsHoverEffectOn,
-    isPasteToTextInputOn: setIsPasteToTextInputOn,
-  };
-
   for (let [key, { _, newValue }] of Object.entries(changes)) {
     state = KEY_2_SETTER[key](newValue, state);
   }
