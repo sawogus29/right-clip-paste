@@ -17,9 +17,9 @@ export const isTextInputElement = (element) => {
 export const applyHandler = (function () {
   let handler;
 
-  return (newHandler) => {
-    document.body.removeEventListener(handler);
+  return (type, newHandler, options) => {
+    document.body.removeEventListener(type, handler, options);
     handler = newHandler;
-    document.body.addEventListener(handler);
+    document.body.addEventListener(type, handler, options);
   };
 })();
