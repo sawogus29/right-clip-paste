@@ -73,7 +73,7 @@ const setIsPasteToTextInputOn = (isPasteToTextInputOn, state) => {
 /**
  * Event Loop
  */
-chrome.storage.onChanged.addEventListener((changes, namespaces) => {
+chrome.storage.onChanged.addListener((changes, namespaces) => {
   const KEY_2_SETTER = {
     isRightClipOn: setIsRightClipOn,
     isHoverEffectOn: setIsHoverEffectOn,
