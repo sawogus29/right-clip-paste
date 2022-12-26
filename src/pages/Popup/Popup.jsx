@@ -7,10 +7,11 @@ function Popup() {
   const [isRightClipOn, setIsRightClipOn] = useState(true);
   const [isHoverEffectOn, setIsHoverEffectOn] = useState(true);
   const [isPasteToTextInputOn, setIsPasteToTextInputOn] = useState(true);
+  const isContentHoverEffectOn = isRightClipOn && isHoverEffectOn;
 
   // initialization
   useEffect(() => {
-    chrome.storage.local
+    chrome.storage.sync
       .get({
         isRightClipOn: true,
         isHoverEffectOn: true,
@@ -26,12 +27,18 @@ function Popup() {
 
   // switch handler
   useEffect(() => {
-    chrome.storage.local.set({ isRightClipOn, isHoverEffectOn: isRightClipOn });
-  }, [isRightClipOn]);
+    chrome.storage.sync.set({ isRightClipOn });
+    chrome.storage.local.set({
+      isRightClipOn,
+      isHoverEffectOn: isContentHoverEffectOn,
+    });
+  }, [isRightClipOn, isContentHoverEffectOn]);
   useEffect(() => {
+    chrome.storage.sync.set({ isHoverEffectOn });
     chrome.storage.local.set({ isHoverEffectOn });
   }, [isHoverEffectOn]);
   useEffect(() => {
+    chrome.storage.sync.set({ isPasteToTextInputOn });
     chrome.storage.local.set({ isPasteToTextInputOn });
   }, [isPasteToTextInputOn]);
 
