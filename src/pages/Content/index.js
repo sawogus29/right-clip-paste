@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React from 'react';
 import { render } from 'react-dom';
 import Snackbar from '@mui/material/Snackbar';
@@ -6,7 +7,7 @@ import {
   writeToClipboard,
   readFromClipboard,
   isTextInputElement,
-  applyHandler,
+  useHandler,
 } from './utils';
 
 /**
@@ -31,7 +32,9 @@ const renderSnackbar = (text, open = true, duration = 1000, maxLength = 50) => {
   );
 };
 
-const makeHandler = (isPasteToTextInputOn, isRightClipOn) => {
+const applyRightClickHandler = useHandler('contextmenu', { capture: true });
+
+const makeRightClickHandler = (isPasteToTextInputOn, isRightClipOn) => {
   if (!isPasteToTextInputOn && !isRightClipOn) {
     return null;
   }
@@ -57,21 +60,15 @@ const makeHandler = (isPasteToTextInputOn, isRightClipOn) => {
   };
 };
 
-const applyRightClickHandler = (isPasteToTextInputOn, isRightClipOn) => {
-  applyHandler(
-    'contextmenu',
-    makeHandler(isPasteToTextInputOn, isRightClipOn),
-    { capture: true }
-  );
-};
-
 /**
  * setter
  */
 const setIsRightClipOn = (isRightClipOn, state) => {
   const { isPasteToTextInputOn } = state;
 
-  applyRightClickHandler(isPasteToTextInputOn, isRightClipOn);
+  applyRightClickHandler(
+    makeRightClickHandler(isPasteToTextInputOn, isRightClipOn)
+  );
 
   return { ...state, isRightClipOn };
 };
@@ -85,7 +82,9 @@ const setIsHoverEffectOn = (isHoverEffectOn, state) => {
 const setIsPasteToTextInputOn = (isPasteToTextInputOn, state) => {
   const { isRightClipOn } = state;
 
-  applyRightClickHandler(isPasteToTextInputOn, isRightClipOn);
+  applyRightClickHandler(
+    makeRightClickHandler(isPasteToTextInputOn, isRightClipOn)
+  );
 
   return { ...state, isPasteToTextInputOn };
 };

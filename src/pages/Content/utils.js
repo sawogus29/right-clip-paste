@@ -14,12 +14,12 @@ export const isTextInputElement = (element) => {
   );
 };
 
-export const applyHandler = (function () {
+export const useHandler = (type, options) => {
   let handler;
 
-  return (type, newHandler, options) => {
+  return (newHandler) => {
     document.body.removeEventListener(type, handler, options);
     handler = newHandler;
     document.body.addEventListener(type, handler, options);
   };
-})();
+};
