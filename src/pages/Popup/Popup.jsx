@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import Switch from '@mui/material/Switch';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import { FormGroup } from '@mui/material';
+import { List } from '@mui/material';
+import { ContentCopy, Visibility, ContentPasteGo } from '@mui/icons-material';
+import ListItemSwitch from './ListItemSwitch';
 
 function Popup() {
   const [isRightClipOn, setIsRightClipOn] = useState(true);
@@ -44,36 +44,30 @@ function Popup() {
 
   return (
     <div className="App">
-      <FormGroup className="form-group">
-        <FormControlLabel
-          label="right click to clip"
-          control={
-            <Switch
-              checked={isRightClipOn}
-              onChange={(e) => setIsRightClipOn(e.target.checked)}
-            />
-          }
+      <List dense>
+        <ListItemSwitch
+          icon={<ContentCopy />}
+          primaryText={'Clip'}
+          secondaryText={'Right click to clip'}
+          checked={isRightClipOn}
+          onChange={() => setIsRightClipOn((prev) => !prev)}
         />
-        <FormControlLabel
-          label="hover effect"
-          control={
-            <Switch
-              checked={isHoverEffectOn}
-              onChange={(e) => setIsHoverEffectOn(e.target.checked)}
-              disabled={!isRightClipOn}
-            />
-          }
+        <ListItemSwitch
+          icon={<Visibility />}
+          primaryText={'Hover Effect'}
+          secondaryText={'show selection'}
+          checked={isHoverEffectOn}
+          onChange={() => setIsHoverEffectOn((prev) => !prev)}
+          disabled={!isRightClipOn}
         />
-        <FormControlLabel
-          label="paste to text input"
-          control={
-            <Switch
-              checked={isPasteToTextInputOn}
-              onChange={(e) => setIsPasteToTextInputOn(e.target.checked)}
-            />
-          }
+        <ListItemSwitch
+          icon={<ContentPasteGo />}
+          primaryText={'Paste'}
+          secondaryText={'Right click to paste on input field'}
+          checked={isPasteToTextInputOn}
+          onChange={() => setIsPasteToTextInputOn((prev) => !prev)}
         />
-      </FormGroup>
+      </List>
     </div>
   );
 }

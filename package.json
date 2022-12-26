@@ -1,7 +1,7 @@
 {
-  "name": "chrome-extension-boilerplate-react",
-  "version": "4.4.0",
-  "description": "A chrome extension boilerplate built with React 17, Webpack 5, and Webpack Dev Server 4",
+  "name": "right-clip-paste",
+  "version": "1.0.0",
+  "description": "Clip and Paste by Right Click",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -16,6 +16,7 @@
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@hot-loader/react-dom": "^17.0.2",
+    "@mui/icons-material": "^5.11.0",
     "@mui/material": "^5.11.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
