@@ -39,22 +39,36 @@ const makeRightClickHandler = (isPasteToTextInputOn, isRightClipOn) => {
     return null;
   }
 
-  return (e) => {
+  const preventAll = (e) => {
     e.preventDefault();
     e.stopPropagation();
     e.stopImmediatePropagation();
+  };
 
-    if (isPasteToTextInputOn && isTextInputElement(e.target)) {
-      readFromClipboard().then((text) => {
-        e.target.value = text;
-      });
+  const pasteHandler = (e) => {
+    preventAll(e);
+
+    readFromClipboard().then((text) => {
+      e.target.value = text;
+    });
+  };
+
+  const copyHandler = (e) => {
+    preventAll(e);
+
+    console.log(e.target.innerText);
+    writeToClipboard(e.target.innerText);
+    renderSnackbar(e.target.innerText);
+  };
+
+  return (e) => {
+    if (isTextInputElement(e.target) && isPasteToTextInputOn) {
+      pasteHandler(e);
       return;
     }
 
-    if (isRightClipOn) {
-      console.log(e.target.innerText);
-      writeToClipboard(e.target.innerText);
-      renderSnackbar(e.target.innerText);
+    if (!isTextInputElement(e.target) && isRightClipOn) {
+      copyHandler(e);
       return;
     }
   };
