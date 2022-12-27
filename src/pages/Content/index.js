@@ -134,6 +134,10 @@ chrome.storage.local.get(state).then((newState) => {
  * Event Loop
  */
 chrome.storage.onChanged.addListener((changes, namespaces) => {
+  if (namespaces !== 'local') {
+    return;
+  }
+
   for (let [key, { _, newValue }] of Object.entries(changes)) {
     state = KEY_2_SETTER[key](newValue, state);
   }
